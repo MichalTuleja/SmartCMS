@@ -1,0 +1,32 @@
+#panel-menu ul{display:block;background-color:#F9EE71;list-style-type:none;}
+#panel-menu li{float:left;border:none;background-color:#F9EE71;padding:5px;margin-left:10px;border:1px solid #BEAF00;border-bottom:none;}
+#panel-menu a{font-family:Arial;font-size:10pt;font-weight:bold;text-decoration:none;color:black;}
+
+#admin-panel div{background-color:#F9EE71;clear:both;border:1px solid #BEAF00;padding:7px}
+
+
+
+
+#admin-panel table{font-weight:bold;font-family: Arial, Helvetica, sans-serif;font-size: 10pt;border-collapse:collapse;}
+#admin-panel h1{font-weight:bold;font-family: Arial, Helvetica, sans-serif;font-size: 15pt;}
+#admin-panel .button {width:120px;color:#000;background-color:#d5fc7a; /* #ECD872; */
+                                 font-family:Verdana, Arial, Helvetica, sans-serif;
+                                 font-style:normal;font-weight:bold;font-size:12pt;
+                                 border:1px solid #0B6600;}
+                                 
+#admin-panel table{border:1px solid grey;}
+
+#admin-panel input{width:150px;border:1px solid black;
+                                 font-family:Arial, Helvetica, sans-serif;font-size:11pt;font-weight:normal;}
+#admin-panel td.buttons{text-align:right;}
+
+
+#users td{border:1px solid grey;padding:3px;}
+#users td.login{width:80px;}
+#users td.name{width:250px;}
+#users td.lastvisit{width:130px;}
+
+#log table{border-collapse:collapse;}
+#log td{border:1px solid grey;padding:3px;}
+#log td.time{width:150px;}
+#log td.event{width:450px;}

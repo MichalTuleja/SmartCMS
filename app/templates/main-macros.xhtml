@@ -1,0 +1,90 @@
+<code lang="xml">
+
+<head metal:define-macro="head-section">
+        <meta charset="UTF-8" />
+        <meta name="Description" content="" />
+        <meta name="Keywords" content="" />
+        <link rel="Stylesheet" type="text/css" href="css/style.css" />
+        <link rel="Stylesheet" type="text/css" href="css/${site/file/render}.css" />
+        <script type="text/javascript" src="javascript/common.js"></script>
+        <title>${title}</title>
+
+        <script type="text/javascript" src="javascript/vendor/tiny_mce/tiny_mce.js" ></script>
+        <script type="text/javascript">
+                tinyMCE.init({
+                        mode : "exact",
+                        elements : "body",
+                        language : "en",
+                        theme : "advanced", 
+                        plugins : "emotions,insertdatetime,advimage,nonbreaking",
+
+                    theme_advanced_buttons1 : "fontselect,fontsizeselect,|,bold,italic,underline,|,sub,sup,|,justifyleft,justifycenter,justifyright,justifyfull,|,forecolor,backcolor,removeformat",
+                    theme_advanced_buttons2 : "cut,copy,paste,|,bullist,numlist,|,outdent,indent,|,undo,redo,|,link,unlink,image,|,code,|,insertdate,inserttime,|,hr,nonbreaking,charmap",
+                    theme_advanced_buttons3 : "",
+                    theme_advanced_toolbar_location : "top",
+                    theme_advanced_toolbar_align : "left",
+                    extended_valid_elements : "iframe[src|width|height|name|align],object[width|height],param[name|value],embed[type|width|height|src|allowfullscreen|allowscriptaccess]",
+
+                    // Example content CSS (should be your site CSS)
+                    //content_css : "frontend/style.css",
+
+                    // Drop lists for link/image/media/template dialogs
+                    template_external_list_url : "js/template_list.js",
+                    external_link_list_url : "js/link_list.js",
+                    external_image_list_url : "js/image_list.js",
+                    media_external_list_url : "js/media_list.js"
+                });
+        </script>
+</head>
+
+<div  metal:define-macro="auth-information" id="auth-information">
+        <p tal:condition="php:Site::isUser()" tal:define="name php:Site::getName()">
+                 Logged as ${name} -- <a href="?action=logoff">Log out</a></p>
+        <p tal:condition="php:!Site::isUser()"><a href="?page=admin">Log in</a></p>
+</div>
+
+<div metal:define-macro="logo" id="logo">
+</div>
+
+<div metal:define-macro="title" id="title">
+</div>
+
+<div metal:define-macro="menu" id="menu">
+        <ul>
+                <li><a href="?page=news">News</a></li>
+                <li><a href="?page=articles&list=1">Articles</a></li>
+                <li><a href="?page=pictures">Photos</a></li>
+                <li><a href="?page=articles&art=2">Contact</a></li>
+                <li tal:condition="php:Site::isUser()"><a href="?page=admin&view_log=1">Admin Panel</a></li>
+        </ul>
+</div>
+
+<div metal:define-macro="under_menu" id="under_menu">
+</div>
+
+
+<div metal:define-macro="notice" tal:repeat="messages messages" id="notice">
+        <div class="${messages/0}"><table><tr><td><img src="images/${messages/0}.png" /></td>
+        <td>${messages/1}</td></tr></table></div>
+</div>
+
+
+<div metal:define-macro="side_panel" id="side_panel">
+        <p>side_panel</p>
+</div>
+
+<div metal:define-macro="footer" id="footer">
+        <hr />
+        <div style="width:30px;">&nbsp;</div>
+        <div>
+        </div>
+        <p>Created by <a href="http://www.michal.tuleja.de">Michał Tuleja</a></p>
+</div>
+
+<div metal:define-macro="debug">
+        <div tal:content="debug">
+                <pre tal:content="debug/">Debug Content</pre>
+        </div>
+</div>
+
+</code>

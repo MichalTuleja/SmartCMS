@@ -1,0 +1,30 @@
+<!doctype html> 
+  
+<html>
+    <span metal:use-macro="../app/templates/main-macros.xhtml/head-section"></span>
+
+<body>
+    <div id="main_container">
+        <div id="header" tal:condition="site/header">
+            <span metal:use-macro="../app/templates/main-macros.xhtml/auth-information"></span>
+            <span metal:use-macro="../app/templates/main-macros.xhtml/title"></span>
+            <span metal:use-macro="../app/templates/main-macros.xhtml/menu"></span>
+            <span metal:use-macro="../app/templates/main-macros.xhtml/under_menu"></span>
+        </div>
+
+        <div id="internal_container">
+            <span metal:use-macro="../app/templates/main-macros.xhtml/notice"></span>
+            <div id="main">
+                <div>
+                    <span metal:use-macro="../app/templates/${site/file/render}.xhtml/body"></span>
+                </div>
+                <!--<span tal:condition="site/side_panel" metal:use-macro="../app/templates/main-macros.xhtml/side_panel"></span>-->
+                
+            </div>
+            <span metal:use-macro="../app/templates/main-macros.xhtml/footer"></span>
+            <div class="clear"></div>
+        </div>
+    </div>
+</body>
+
+</html>

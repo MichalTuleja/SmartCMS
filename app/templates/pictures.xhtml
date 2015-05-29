@@ -1,0 +1,225 @@
+<code lang="xml">
+
+<div metal:define-macro="body">
+    <div id="pictures">
+        <div id="admin" style="width:570px;margin: 0 auto;margin-bottom:40px;" tal:condition="exists:cat_form">
+            <form name="addCategory"
+                        action="?page=pictures"
+                        method="POST">
+                <input type="hidden" tal:define="id cat_form/id | string:" name="id" value="${id}" />
+                <table>
+                    <tr>
+                        <td>Title:</td>
+                        <td><input class="pictures" name="title" 
+                                    tal:define="title cat_form/title | string:" value="${title}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Description:</td>
+                        <td><textarea class="pictures" name="descr" 
+                                        tal:define="descr cat_form/descr | string:" 
+                                        tal:content="descr">Description</textarea></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Date (RRRR-MM-DD):
+                        <input style="width:80px;" class="pictures date" name="mtime"
+                                        tal:define="mtime cat_form/mtime | string:"
+                                        value="${mtime}" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input class="button" type="submit" name="cat" value="OK" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+
+
+        <div class="list" tal:condition="exists:categories" tal:repeat="cat categories">
+            <tal:block tal:repeat="entry cat/list">
+                <div class="buttons" tal:condition="php:Site::isUser()" tal:define="id entry/id">
+                    <a tal:condition="cat/public" href="?page=pictures&cat_public=${id}">Hide</a>
+                    <a tal:condition="not:cat/public" href="?page=pictures&cat_public=${id}">Publish</a>
+                    <a tal:condition="exists: entry/thumb" href="?page=pictures&remove_thumb=${id}">
+                        <img src="images/picture_rem.gif" alt="Remove thumbnail" title="Delete thumbnail" /></a>
+                    <a href="?page=pictures&cat_edit=${id}">
+                        <img src="images/building_edit.png" alt="Edit" title="Edit" /></a>
+                    <a href="?page=pictures&cat_remove=${id}" onclick="return confirmMsg('Are you sure want to remove?');">
+                        <img src="images/cross.png" alt="Delete" title="Delete" /></a>
+                </div>
+
+                <div class="list-entry">
+                    <div class="header">
+                        <div class="thumb_container">
+                            <div class="thumb">
+                                <a href="?page=pictures&cat=${entry/id}">
+                                    <img tal:condition="exists: entry/thumb" class="thumb" src="${img_dir}/${entry/thumb/converted_file/thumb}" alt="" /></a>
+                            </div>
+                        </div>
+
+                        <div class="title">
+                            <a tal:content="entry/title"
+                                href="?page=pictures&cat=${entry/id}"
+                                class="title">Title</a>
+                        </div>
+                        <div class="descr">
+                            <p tal:content="entry/descr">Description</p>
+                        </div>
+                    </div>
+                </div>
+            </tal:block>
+        </div>
+
+        <a tal:condition="exists:recycle_bin"
+                href="?page=pictures&cat=1"
+                class="title">Recycle bin</a>
+
+
+    </div>
+    
+    
+    
+    <div id="thumbs_external" >
+        <div id="admin" tal:condition="exists:picture_form">
+            <form action="?page=pictures&cat=${cat/id}"
+                        method="POST"
+                        enctype="multipart/form-data"
+                        tal:define="pic picture_form">
+                <input type="hidden" name="id" value="" />
+                <input type="hidden" name="cat_id" value="${cat/id}" />
+                <input type="hidden" name="max_file_size" value="20971520" />
+                <span class="input">
+                <table>
+                    <tr>
+                        <td>Photo description:</td>
+                        <td><textarea class="input" name="caption" tal:content="">Caption</textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Attached file:</td>
+                        <td><input class="input_file" name="userfile" type="file" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"><input class="button" type="submit" name="pic" value="Dodaj" /></td>
+                    </tr>
+                </table>
+                </span>
+            </form>
+        </div>
+
+       <div id="admin" tal:condition="exists:picture_edit_form">
+            <form action="?page=pictures&cat=${cat/id}"
+                        method="POST"
+                        tal:define="pic picture_edit_form">
+                <input type="hidden" name="id" value="${pic/id}" />
+                <span class="input">
+                <table>
+                <tr>
+                    <td><img src="${img_dir}/${pic/converted_file/thumb}" alt="Miniatura" /></td>
+                   <td>
+                   <table>
+                    <tr>
+                        <td>Photo descirption:</td>
+                        <td><textarea class="input" style="width:400px;" name="caption" tal:content="pic/caption">Caption</textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Album:</td>
+                        <td>
+                            <select name="cat_id">
+                                <optgroup label="Bieżący album">
+                                    <option value="${active_category/id}">${active_category/title}</option>
+                                </optgroup>
+                                <optgroup label="Albumy opublikowane">
+                                    <option tal:repeat="list categories_form/list" value="${list/id}">${list/title}</option>
+                                </optgroup>
+                                <optgroup label="Albumy ukryte">
+                                    <option tal:repeat="list categories_npublic_form/list" value="${list/id}">${list/title}</option>
+                                </optgroup>
+                            </select>
+                        </td>
+                    </tr>
+                    </table>
+                </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <span class="confirm">
+                            <input class="button" type="submit" name="pic_edit" value="OK" />
+                        </span>
+                    </td>
+                </tr>
+                </table>
+                </span>
+            </form>
+        </div>
+
+
+
+
+        <div id="thumbs" tal:condition="exists:thumbs">
+            <div class="back">
+                <a class="back" href="?page=pictures">Back</a>
+            </div>
+			
+			<div>
+				<a tal:condition="exists:is_recycle"
+					href="?page=pictures&cat=1&empty_trash=1"
+					onclick="return confirmMsg();"
+					class="title">Empty recycle bin</a>
+            </div>
+
+            <div class="thumb" 
+                     tal:repeat="thumb thumbs/list">
+                <div class="external_img">
+                    <div class="img">
+                        <a href="?page=pictures&view=${thumb/id}&show_header=0">
+                            <img class="thumb" src="${img_dir}/${thumb/converted_file/thumb}" alt="${thumb/caption}" title="${thumb/caption}" />
+                        </a>
+                    </div>
+                </div>
+                <div class="admin" tal:condition="php:Site::isUser()" tal:define="id thumb/id">
+                    <a tal:condition="not:thumbs/isRecycleBin" href="?page=pictures&cat=${cat/id}&pic_remove=${id}" onclick="return confirmMsg('Are you sure?');">
+                        <img class="admin" src="images/cross.png" alt="Move to recycle bin" title="Move to recycle bin" /></a>
+                    <a tal:condition="thumbs/isRecycleBin" href="?page=pictures&cat=${cat/id}&pic_drop=${id}" onclick="return confirmMsg('Are you sure want to delete?');">
+                        <img class="admin" src="images/cross.png" alt="Delete" title="Delete" /></a>
+                    <a href="?page=pictures&cat=${cat/id}&pic_edit=${id}">
+                        <img class="admin" src="images/building_edit.png" alt="Edit" title="Edit" /></a>
+                    <a href="?page=pictures&cat=${cat/id}&set_thumb=${id}">
+                        <img class="admin" src="images/picture.gif" alt="Set as thumbnail" title="Set as thumbnail" /></a><br />
+                    <input class="admin" value="${img_dir}/${thumb/converted_file/medium}" />
+                </div> 
+            </div>
+        </div>
+    </div>
+
+    <div id="picture" tal:condition="exists:picture">
+        <div>
+            <div class="back">
+                <a class="back" href="?page=pictures&cat=${picture/cat_id}">Back</a>
+            </div>
+            <div style="float:right;margin-right:30px;" tal:condition="php:Site::isUser()" tal:define="id picture/id">
+                <a href="?page=pictures&cat=${cat/id}&pic_edit=${id}">
+                    <img src="images/building_edit.png" alt="Edycja" title="Edycja" /></a>
+            </div> 
+            <div class="pic">
+            <a tal:condition="exists:next" href="?page=pictures&view=${next/id}&show_header=0">
+                <img class="pic" src="${img_dir}/${picture/converted_file/medium}" alt="${picture/caption}" />
+            </a>
+            <tal:blank tal:condition="not:exists:next">
+                <img class="pic" src="${img_dir}/${picture/converted_file/medium}" alt="${picture/caption}" />
+            </tal:blank>
+            </div>
+            <div>
+                <a tal:condition="exists:prev" href="?page=pictures&view=${prev/id}&show_header=0">Previous</a>
+                <a href="${img_dir}/${picture/converted_file/high}">Full size</a>
+                <a tal:condition="exists:next" href="?page=pictures&view=${next/id}&show_header=0">Next</a>
+            </div>
+            <div class="caption_external" tal:condition="exists:picture/caption">
+                <div class="caption">${picture/caption}</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+</code>

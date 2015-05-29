@@ -1,0 +1,95 @@
+<code lang="xml">
+    <div metal:define-macro="body" id="news">
+        <div id="admin" style="width:650px;" tal:condition="exists:news_form">
+            <form action="?page=news"
+                    method="POST">
+                <input type="hidden" name="id" value="${news_form/id}" />
+                <table>
+                    <tr>
+                        <td>Title:</td>
+                        <td><input class="news" name="title" value="${news_form/title}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Content:</td>
+                        <td><textarea class="news" name="body" tal:content="news_form/body">Body</textarea></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>
+                            Meeting date (optional, RRRR-MM-DD): 
+                            <input style="width:80px;" class="news date" name="meet_date" value="${news_form/meet_date}" />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Time: 
+                            <input style="width:20px;" class="news" name="meet_hour" value="${news_form/meet_hour}" />
+                            :
+                            <input style="width:20px;" class="news" name="meet_minute" value="${news_form/meet_minute}" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="buttons">
+                            <input class="button" type="submit" name="news" value="OK" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+        <tal:block tal:condition="php:Site::isUser()">
+            <div tal:condition="news/showsRemoved">
+                <a href="?page=news">Back</a>
+            </div>
+            <div tal:condition="news/showsRemoved">
+                <a href="?page=news&recycle=1&empty_trash=1" onclick="return confirmMsg('Are you sure?');">Empty recycle bin</a>
+            </div>
+        </tal:block>
+
+        <div id="news_external">
+        <div id="news_container">
+            <div class="entry" tal:repeat="entry news/list">
+                <div class="header">
+
+                    <span class="editrem" tal:condition="php:Site::isUser()" tal:define="id entry/id">
+                        <a href="?page=news&edit=${id}">
+                            <img src="images/building_edit.png" class="admin" alt="Edit" title="Edit" /></a>
+                        <a tal:condition="not:news/showsRemoved" href="?page=news&remove=${id}">
+                            <img src="images/cross.png" class="admin" alt="Move to recycle bin" title="Move to recycle bin" /></a>
+                        <a tal:condition="news/showsRemoved" href="?page=news&recycle=1&remove=${id}">
+                            <img src="images/revert.gif" class="admin" alt="Revert" title="Revert" /></a>
+                        <a tal:condition="news/showsRemoved" href="?page=news&recycle=1&drop=${id}">
+                            <img src="images/cross.png" class="admin" alt="Delete" title="Delete" onclick="return confirmMsg('Are you sure want to remove?');"/></a>
+                    </span>
+                    <p class="title" tal:content="entry/title">Title</p>
+                    <p class="info"> Author: <b>${entry/author}</b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Data: <b>${entry/ctime}</b></p>
+                </div>
+                <hr />
+                <div class="body" tal:content="structure entry/body">Content<div class="clear"></div></div>
+            </div>
+            <div class="right" tal:condition="news/hasLimit">
+                <a href="?page=news&all=1">Older posts</a>
+            </div>
+            <tal:block tal:condition="php:Site::isUser()">
+                <div class="right" tal:condition="not:news/showsRemoved">
+                    <a href="?page=news&recycle=1" title="Zawiera usunięte wpisy">Recycle bin</a>
+                </div>
+            </tal:block>
+        </div>
+ 
+        <div id="side_panel">
+            <div id="calendar">
+                <table class="calendar" tal:repeat="cal cals">
+                    <tr><td colspan="7" class="caption" tal:content="cal/caption">Month name</td></tr>
+                    <tr tal:repeat="row cal/fields/row">
+                        <tal:block tal:repeat="week row">
+                            <td tal:condition="not:exists:week/hour">${week/day}</td>
+                            <td class="marked" tal:condition="exists:week/hour" title="Meeting at ${week/hour}:${week/minute}">${week/day}</td>
+                        </tal:block>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <div class="pictures" tal:repeat="pic pic/list"><a href="?page=pictures&view=${pic/id}&show_header=0"><img class="pictures" src="${img_dir}/${pic/converted_file/thumb}" title="${pic/caption}" alt="" /></a></div>
+            </div>
+        </div>
+    </div>
+        
+    </div>
+</code>

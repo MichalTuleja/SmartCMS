@@ -1,0 +1,153 @@
+<code lang="xml">
+<tal:block metal:define-macro="body">
+
+<div tal:condition="php:!Site::isUser()">
+    <div id="login">
+        <div><img src="images/Password%20Manager.png" alt="" width="64" height="64" />
+        <p></p></div>
+        <div>
+        <form action="?page=news" method="POST">
+        <!--<fieldset>
+            <legend><img src="img/img.jpg" />MyForm</legend> -->
+                <table class="form">
+                    <tr>
+                        <td>Login:</td>
+                        <td><input type="text" name="login"/></td>
+                    </tr>
+                    <tr>
+                        <td>Password:</td>
+                        <td><input type="password" name="haslo"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: right;">
+                            <input class="button" type="submit" value="Sign in"/>
+                        </td>
+                    </tr>
+                </table>
+            <!--</fieldset> -->
+        </form>
+        </div>
+    </div>
+</div>
+
+<div tal:condition="php:Site::isUser()">
+    <div id="panel-menu">
+        <ul>
+            <li><a href="?page=admin&view_log=1">System log</a></li>
+            <li><a href="?page=admin&change_password=1">Change password</a></li>
+            <li><a href="?page=admin&user_list=1">Add/Remove User</a></li>
+        </ul>
+    </div>
+
+    <div id="admin-panel">
+        <div tal:condition="exists:password">
+            <h1>Password change for ${password/name}</h1>
+            <form action="?page=admin&view_log=1" method="POST">
+                <input type="hidden" name="id" value="${password/id}" />
+                <input type="hidden" name="login" value="${password/login}" />
+                <table class="form">
+                    <tr>
+                        <td>Current password:</td>
+                        <td><input type="password" name="pass_old"/></td>
+                    </tr>
+                    <tr>
+                        <td>New password:</td>
+                        <td><input type="password" name="pass"/></td>
+                    </tr>
+                    <tr>
+                        <td>Repeat new password:</td>
+                        <td><input type="password" name="pass_rep"/></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: right;">
+                            <input class="button" type="submit" name="change_password" value="Change"/>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+        <div tal:condition="exists:user_list">
+            <h1>User list</h1>
+            <table id="users">
+                <tr>
+                    <td>Login</td>
+                    <td>Full name</td>
+                    <td>Last login</td>
+                    <td colspan="3">Actions</td>
+                </tr>
+                <tr tal:repeat="list user_list">
+                    <td class="login">${list/login}</td>
+                    <td class="name">${list/name}</td>
+                    <td class="lastvisit">${list/lastvisit}</td>
+                    <td><a href="?page=admin&change_user_data=${list/id}">Change user data</a></td>
+                    <td><a href="?page=admin&reset_password=${list/id}&user_list=1" onclick="return confirmMsg('Do you really want reset password of user ${list/login}?');">Reset password</a></td>
+                    <td><a href="?page=admin&user_remove=${list/id}&user_list=1" style="color:darkred" onclick="return confirmMsg('Do you really want to delete ${list/login}\'s account?');">Delete user</a></td>
+                </tr>
+            </table>
+            <a href="?page=admin&add_user=1">Add user</a>
+        </div>
+
+
+        <div tal:condition="exists:user">
+            <h1>Change user data</h1>
+            <form action="?page=admin&user_list=1" method="POST">
+                <input type="hidden" name="id" value="${user/id}" />
+                <table class="form">
+                    <tr>
+                        <td>Login:</td>
+                        <td><input type="text" name="login" value="${user/login}" /></td>
+                    </tr>
+                    <tr>
+                        <td>Full name:</td>
+                        <td><input type="text" name="name" value="${user/name}" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: right;">
+                            <input class="button" type="submit" name="change_user_data" value="Change" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+
+        <div tal:condition="exists:add_user">
+            <h1>Add user</h1>
+            <form action="?page=admin&user_list=1" method="POST">
+                <table class="form">
+                    <tr>
+                        <td>Login:</td>
+                        <td><input type="text" name="login" value="" /></td>
+                    </tr>
+                    <tr>
+                        <td>Full name:</td>
+                        <td><input type="text" name="name" value="" /></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: right;">
+                            <input class="button" type="submit" name="add_user" value="Add" />
+                        </td>
+                    </tr>
+                </table>
+            </form>
+        </div>
+
+
+        <div tal:condition="exists:log">
+            <h1>System log</h1>
+            <table id="log">
+                <tr>
+                    <td>Date/Time</td>
+                    <td>Description</td>
+                </tr>
+                <tr tal:repeat="log log">
+                    <td class="time">${log/time}</td>
+                    <td class="event">${log/message}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+</tal:block>
+</code>

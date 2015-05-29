@@ -1,0 +1,125 @@
+<code lang="xml">
+    <div metal:define-macro="body">
+
+        <div id="article-list">
+            <tal:block tal:condition="not:exists:article">
+            <div tal:condition="php:Site::isUser()" id="admin" style="width:500px;">
+                <form action="?page=articles&art_edit=" method="POST">
+                    <b>Title:</b> <input class="field" name="title" value="" />
+                    <input type="hidden" name="id" value="" />
+                    <input class="button" type="submit" name="art_preview" value="Dodaj" />
+                </form>
+            </div>
+            </tal:block>
+
+            <div class="list"  tal:condition="exists:list" tal:repeat="article list">
+                <div class="buttons" tal:condition="php:Site::isUser()">
+                    <a href="?page=articles&art_public=${article/id}&list=1">Unpublish</a>
+                    <a href="?page=articles&art_remove=${article/id}&list=1" onclick="return confirmMsg('Czy na pewno chcesz usunąć?');">Delete</a>
+                </div>
+                <div class="entry">
+                    <div class="header">
+                        <div class="title">
+                            <a tal:define="id article/id" 
+                                tal:content="article/title" 
+                                href="?page=articles&art=${id}"
+                                class="title">Title</a>
+                        </div>
+                    </div>
+                    <div class="description">
+                        <p tal:content="article/descr">Description</p>
+                    </div>
+                </div>
+            </div>
+            <div tal:condition="exists:list_npublic">
+                <h1>Unpublished articles</h1>
+                <div  class="list" tal:repeat="article list_npublic">
+                    <div class="buttons" tal:condition="php:Site::isUser()">
+                        <a href="?page=articles&art_public=${article/id}&list=1">Publish</a>
+                        <a href="?page=articles&art_remove=${article/id}&list=1" onclick="return confirmMsg('Are you sure want to delete this article?');">Delete</a>
+                    </div>
+                    <div class="entry">
+                        <div class="header">
+                            <div class="title">
+                                <a tal:define="id article/id" 
+                                    tal:content="article/title" 
+                                    href="?page=articles&art=${id}"
+                                    class="title">Title</a>
+                            </div>
+                        </div>
+                        <div class="description">
+                            <p tal:content="article/descr">Description</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div tal:condition="exists:list_removed">
+                <h1>Recycle bin</h1>
+                <a href="?page=articles&empty_trash=1&list=1" onclick="return confirmMsg('Are you sure?');">Delete all elements</a>
+                <div  class="list" tal:repeat="article list_removed">
+                    <div class="buttons" tal:condition="php:Site::isUser()">
+                        <a href="?page=articles&art_undo_remove=${article/id}&list=1">Revert</a>
+                        <a href="?page=articles&art_drop=${article/id}&list=1" onclick="return confirmMsg('Are you sure want delete?');">Delete</a>
+                    </div>
+                    <div class="entry">
+                        <div class="header">
+                            <div class="title">
+                                <a tal:define="id article/id" 
+                                    tal:content="article/title" 
+                                    href="?page=articles&art=${id}"
+                                    class="title">Title</a>
+                            </div>
+                        </div>
+                        <div class="description">
+                            <p tal:content="article/descr">Description</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <tal:blank tal:condition="exists:article_form">
+            <div id="admin">
+                <form tal:condition="php:Site::isUser()" 
+                        tal:define="form article_form"
+                        action="?page=articles" 
+                        method="POST">
+                    <input type="hidden" name="id" value="${article/id}"/>
+                    <table>
+                        <tr>
+                            <td>Title:</td>
+                            <td><input name="title" value="${form/title}" /></td>
+                        </tr>
+                        <tr tal:condition="article/descr_visible">
+                            <td>Short description:</td>
+                            <td><textarea class="descr" tal:content="form/descr" name="descr">Description</textarea></td>
+                        </tr>
+                        <input type="hidden" tal:condition="not:article/descr_visible" name="descr" value="" />
+                        <tr>
+                            <td>Content:</td>
+                            <td><textarea class="body" tal:content="form/body" name="body">Body</textarea></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" class="buttons">
+                                <input class="button" type="submit" name="art_preview" value="Podgląd" />
+                                <input class="button" type="submit" name="art" value="Zapisz" />
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </tal:blank>
+
+        <div tal:condition="exists:article" id="article">
+            <div>
+                <div class="title" tal:content="article/title">Title</div>
+                <div class="buttons" tal:condition="php:Site::isUser()">
+                    <a href="?page=articles&art_edit=${article/id}">Edit</a>
+                </div>
+                <hr />
+                <div class="body" tal:content="structure article/body">Content</div>
+            </div>
+        </div>
+    </div>
+</code>
